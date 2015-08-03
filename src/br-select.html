@@ -23,12 +23,12 @@
 
   <br-select-box>
 
-    <input type="text" on-keyup='_onKeyPress' placeholder="Digite sua busca">
+    <input type="text" on-keyup="_onKeyPress" placeholder="Digite sua busca">
 
     <ul class="list">
       <template is="dom-repeat" items="{{options}}">
         <li class="js-drop-content-item" on-click='_onItemSelected' data-value='{{item.key}}'>
-          {{item.value}}
+          <span>{{item.value}}</span>
         </li>
       </template>
     </ul>
@@ -134,7 +134,7 @@
         this._unselectAll();
         e.target.classList.toggle('is_selected');
         this.label = e.target.innerText;
-        this._closeSelect();
+        //this._closeSelectBox();
         this.selectedItems.push({ "key": e.target.dataValue, "value": e.target.innerText });
       }
 
