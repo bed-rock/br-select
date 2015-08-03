@@ -27,7 +27,7 @@ module.exports = function (grunt) {
       },
       single_file: {
         files: {
-          'dist/css/br-selectbox.css': 'src/br-selectbox.scss'
+          'dist/css/br-select.css': 'src/br-select.scss'
         }
       }
     },
