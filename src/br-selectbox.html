@@ -2,25 +2,25 @@
 
 <dom-module id="br-selectbox">
 
-  <link rel="import" type="css" href="../dist/br-selectbox.css">   
+  <link rel="import" type="css" href="../dist/css/br-selectbox.css">
 
-  <template> 
+  <template>
 
     <svg style="display:none;">
       <defs>
         <symbol id="icon-check" viewBox="0 0 1024 1024">
           <title>check</title>
           <path d="M384 690l452-452 60 60-512 512-238-238 60-60z"></path>
-        </symbol>        
+        </symbol>
       </defs>
-    </svg>   
+    </svg>
 
     <div class="drop drop__down">
       <button class="drop-toggle" on-click='_toggleSelect'>{{label}}</button>
       <div class="drop-overlay" id="wrap-content">
-        <div class="drop-content"> 
+        <div class="drop-content">
 
-          <div class="controls">            
+          <div class="controls">
             <button on-click="_closeSelect">
               <svg class="icon icon-check"><use xlink:href="#icon-check"></use></svg>
             </button>
@@ -58,7 +58,7 @@
 
         label: {
           type: String,
-          readyOnly: true          
+          readyOnly: true
         },
 
         options: {
@@ -101,7 +101,7 @@
 
       _onKeyPress: function(e) {
 
-        this.options = this._search(this.options, e.target.value);                
+        this.options = this._search(this.options, e.target.value);
 
         if(!e.target.value.trim())
          this.options = this.originalOptions;
@@ -126,7 +126,7 @@
           if(!isDuplicated)
             this.selectedItems.push({ "key": e.target.dataValue, "value": e.target.innerText });
 
-          e.target.classList.add('is_selected');          
+          e.target.classList.add('is_selected');
         }
 
         if(this.selectedItems.length > 0)
