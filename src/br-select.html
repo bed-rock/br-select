@@ -8,18 +8,9 @@
 
 <template>
 
-  <template is="dom-if" if="{{label}}">
-    <div class="custom_select">
-      <button on-click='_toggleSelect'>{{label}}</button>
-    </div>
-  </template>
-
-  <template is="dom-if" if="{{icon}}">
-    <button on-click='_toggleSelect'>
-      <br-icons icon="{{icon}}"></br-icons>
-      <i class="icon-caret"></i>
-    </button>
-  </template>
+  <div class="custom_select">
+    <button on-click='_toggleSelect'>{{label}}</button>
+  </div>
 
   <br-select-box>
 
@@ -72,11 +63,6 @@
         value: [],
         notify: true
       },
-
-      icon: {
-        type: String,
-        default: false
-      }
     },
 
     /* -- Lifecycle ------------------------------------------------- */
