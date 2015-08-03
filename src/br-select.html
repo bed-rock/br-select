@@ -1,5 +1,6 @@
 <link rel="import" type="html" href="../../polymer/polymer.html">
 <link rel="import" type="html" href="../../br-select-box/src/br-select-box.html">
+<link rel="import" type="html" href="../../br-icons/src/br-icons.html">
 
 <dom-module id="br-select">
 
@@ -7,14 +8,25 @@
 
 <template>
 
-  <button class="drop-toggle" on-click='_toggleSelect'>{{label}}</button>
+  <template is="dom-if" if="{{label}}">
+    <div class="custom_select">
+      <button on-click='_toggleSelect'>{{label}}</button>
+    </div>
+  </template>
+
+  <template is="dom-if" if="{{icon}}">
+    <button on-click='_toggleSelect'>
+      <br-icons icon="{{icon}}"></br-icons>
+      <i class="icon-caret"></i>
+    </button>
+  </template>
 
   <br-select-box>
 
     <input type="text" on-keyup='_onKeyPress' placeholder="Digite sua busca">
 
-    <ul class="drop-content-list">
-      <template is="dom-repeat" items="{{options}}" >
+    <ul class="list">
+      <template is="dom-repeat" items="{{options}}">
         <li class="js-drop-content-item" on-click='_onItemSelected' data-value='{{item.key}}'>
           {{item.value}}
         </li>
@@ -42,8 +54,7 @@
       },
 
       label: {
-        type: String,
-        readyOnly: true
+        type: String
       },
 
       options: {
@@ -60,6 +71,11 @@
         type: Array,
         value: [],
         notify: true
+      },
+
+      icon: {
+        type: String,
+        default: false
       }
     },
 
@@ -67,7 +83,6 @@
 
     ready: function(){
       this._setOriginalOptions(this.options);
-      this.label = 'Selecione';
     },
 
     /* -- Private Methods ------------------------------------------- */
