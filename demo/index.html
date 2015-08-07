@@ -4,42 +4,42 @@
 	<meta charset="UTF-8">
 	<title>br-selectbox</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	
-	<script src="../vendor/webcomponentsjs/webcomponents-lite.min.js"></script>
-	<link rel="import" href="../src/br-selectbox.html">
 
-	<!-- Demo style -->
-	<style>
-		html, input, button {
-			font-family: Arial;
-			font-size: 16px;
-			line-height: 1.25;
-		}
-	</style>
+	<link rel="stylesheet" href="../../bedrock/dist/css/style.css">
+
+	<script src="../../webcomponentsjs/webcomponents-lite.min.js"></script>
+	<link rel="import" href="../src/br-select.html">
+
 </head>
 <body>
-	
-	<!-- 
-		Usage: 
-		Tag: <br-selectbox></br-selectbox>
-		Attributes:
-				  model: Type: Array
-				  		 Description: Returns the selected option(s)
-				  		 Required: true
-				options: Type: Array
-						 Description: Collection of object with key and value to populate br-selectbox
-						 Required: true
-			multiselect: Type: Boolean
-						 Desription: Set if br-selectbox is multiselect.
-						 Default value: false
-						 Required: false
 
-						-->
-						<br-selectbox
-						model={{value}}
-						options='[{"key": 1, "value": "Judith"}, {"key": 2, "value": "Marie"}, {"key": 3, "value": "Joseph"}, {"key": 4, "value": "John"}]'
-						>
-					</br-selectbox>
+	<div class="container">
 
-				</body>
-				</html>
+		<h1>br-select example</h1>
+
+<!--
+Usage:
+Tag: <br-selectbox></br-selectbox>
+Attributes:
+model: Type: Array
+Description: Returns the selected option(s)
+Required: true
+options: Type: Array
+Description: Collection of object with key and value to populate br-selectbox
+Required: true
+multiselect: Type: Boolean
+Desription: Set if br-selectbox is multiselect.
+Default value: false
+Required: false
+-->
+
+<br-select
+model={{value}}
+label="Selecione"
+options='[{"key": 1, "value": "Judith"}, {"key": 2, "value": "Marie"}, {"key": 3, "value": "Joseph"}, {"key": 4, "value": "John"}]'>
+</br-select>
+
+</div>
+
+</body>
+</html>

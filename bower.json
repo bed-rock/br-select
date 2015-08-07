@@ -24,6 +24,8 @@
     "tests"
   ],
   "dependencies": {
-    "bedrock-base": "*"
+    "bedrock-base": "*",
+    "br-select-box": "*",
+    "br-icons": "*"
   }
 }
