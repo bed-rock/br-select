@@ -14,11 +14,11 @@
 
   <br-select-box>
 
-    <input type="text" on-keyup="_onKeyPress" placeholder="Digite sua busca">
+    <input type="text" on-keyup="_onKeyPress" placeholder="Digite sua busca" tabindex="0">
 
     <ul class="list">
       <template is="dom-repeat" items="{{options}}">
-        <li class="js-drop-content-item" on-click='_onItemSelected' data-value='{{item.key}}'>
+        <li class="js-drop-content-item" on-click='_onItemSelected' data-value='{{item.key}}' tabindex="0">
           <span>{{item.value}}</span>
         </li>
       </template>
@@ -77,7 +77,8 @@
       this.originalOptions = options;
     },
 
-    _toggleSelect: function(){
+    _toggleSelect: function(event){
+      event.stopPropagation();
       Polymer.dom(this.root).querySelector('br-select-box').classList.toggle('open');
     },
 
