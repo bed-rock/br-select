@@ -1,6 +1,6 @@
 {
-  "name": "br-selectbox",
-  "version": "0.0.1",
+  "name": "br-select",
+  "version": "1.0.0",
   "homepage": "https://github.com/bed-rock/br-selectbox",
   "authors": [
     "cbfranca <cleidsonbf@gmail.com>",
@@ -24,8 +24,8 @@
     "tests"
   ],
   "dependencies": {
-    "bedrock-base": "*",
-    "br-select-box": "*",
-    "br-icons": "*"
+    "bedrock-base": "~1.0.0",
+    "br-select-box": "~1.0.0",
+    "br-icons": "~1.0.0"
   }
 }
