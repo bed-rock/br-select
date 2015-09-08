@@ -8,13 +8,15 @@
 
 
 :host {
-  display: block;
+  display: flex;
   position: relative;
+  width: 100%;
   user-select: none;
 }
 
 input {
   padding: 0 1rem;
+  flex-grow: 0;
 
   &:hover,
   &:focus {

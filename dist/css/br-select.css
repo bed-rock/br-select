@@ -1,0 +1,15 @@
+:host {
+  display: block;
+  position: relative;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+}
+
+input {
+  padding: 0 1rem;
+}
+input:hover, input:focus {
+  background-color: #fff;
+}

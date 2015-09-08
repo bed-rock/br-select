@@ -7,6 +7,7 @@
 
 	<link rel="stylesheet" href="../../bedrock/dist/css/style.css">
 
+  <link rel="import" type="html" href="../../polymer/polymer.html">
 	<script src="../../webcomponentsjs/webcomponents-lite.min.js"></script>
 	<link rel="import" href="../src/br-select.html">
 
@@ -19,18 +20,14 @@
 
 <!--
 Usage:
-Tag: <br-selectbox></br-selectbox>
+Tag: <br-select></br-select>
 Attributes:
-model: Type: Array
-Description: Returns the selected option(s)
-Required: true
-options: Type: Array
-Description: Collection of object with key and value to populate br-selectbox
-Required: true
-multiselect: Type: Boolean
-Desription: Set if br-selectbox is multiselect.
-Default value: false
-Required: false
+  model: Type: Array
+  options: Type: Array
+  Required: Type: Boolean
+  multiselect: Type: Boolean
+  Desription: Set if br-selectbox is multiselect.
+  Default value: false
 -->
 
 <br-select
