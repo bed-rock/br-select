@@ -1,6 +1,9 @@
 :host {
-  display: block;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
   position: relative;
+  width: 100%;
   -webkit-user-select: none;
      -moz-user-select: none;
       -ms-user-select: none;
@@ -9,6 +12,9 @@
 
 input {
   padding: 0 1rem;
+  -webkit-flex-grow: 0;
+      -ms-flex-positive: 0;
+          flex-grow: 0;
 }
 input:hover, input:focus {
   background-color: #fff;
