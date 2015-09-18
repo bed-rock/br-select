@@ -13,7 +13,7 @@
 
   <br-select-box>
 
-    <input type="text" on-keyup="_onKeyPress" placeholder="Digite sua busca" tabindex="0">
+    <input type="text" on-input="_onKeyPress" placeholder="Digite sua busca" tabindex="0">
 
     <ul class="list">
       <template is="dom-repeat" items="{{options}}">
@@ -60,7 +60,7 @@
       model: {
         type: Array,
         value: [],
-        notify: true
+        reflectToAttribute: true
       },
     },
 
