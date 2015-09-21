@@ -6,15 +6,13 @@
 @import '../../bedrock/scss/variables';
 @import 'variables';
 
-
 :host {
-  display: flex;
   position: relative;
-  width: 100%;
+  display: block;
   user-select: none;
 }
 
-input {
+.search {
   padding: 0 1rem;
   flex-grow: 0;
 
