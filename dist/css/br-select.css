@@ -1,21 +1,16 @@
 :host {
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  position: relative;
-  width: 100%;
   -webkit-user-select: none;
      -moz-user-select: none;
       -ms-user-select: none;
           user-select: none;
 }
 
-input {
+.search {
   padding: 0 1rem;
   -webkit-flex-grow: 0;
       -ms-flex-positive: 0;
           flex-grow: 0;
 }
-input:hover, input:focus {
+.search:hover, .search:focus {
   background-color: #fff;
 }
