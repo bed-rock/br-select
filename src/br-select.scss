@@ -7,6 +7,8 @@
 @import 'variables';
 
 :host {
+  position: relative;
+  display: block;
   user-select: none;
 }
 
