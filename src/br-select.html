@@ -8,7 +8,7 @@
 
   <div class="form_field  select">
     <label for$="{{name}}">{{label}}</label>
-    <input type="text" id$="{{name}}" tabindex="0" value$="{{text}}" on-focus="_toggleSelect" on-click="_toggleSelect" required$="{{required}}" readonly>
+    <input type="text" id$="{{name}}" tabindex="0" value$="{{text}}" on-focus="_open" on-click="_open" required$="{{required}}" readonly>
   </div>
 
   <br-select-box>
@@ -69,9 +69,13 @@
       this.originalOptions = options;
     },
 
-    _toggleSelect: function(event){
+    _open: function(event){
       event.stopPropagation();
-      Polymer.dom(this.root).querySelector('br-select-box').classList.toggle('open');
+      Polymer.dom(this.root).querySelector('br-select-box').classList.add('open');
+    },
+
+    _close: function(){
+      Polymer.dom(this.root).querySelector('br-select-box').classList.remove('open');
     },
 
     _onKeyPress: function(e) {
