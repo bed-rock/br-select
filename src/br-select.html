@@ -1,29 +1,29 @@
 <link rel="import" type="html" href="../../br-select-box/src/br-select-box.html">
-<link rel="import" type="html" href="../../br-icons/src/br-icons.html">
 
 <dom-module id="br-select">
 
-<link rel="import" type="css" href="../dist/css/br-select.css">
+<link rel="import" type="css" href="../dist/css/br-select.min.css">
 
 <template>
 
-  <div class="custom_select">
-    <button type="button" on-click='_toggleSelect'>{{label}}</button>
+  <div class="form_field  select">
+    <label for$="{{name}}">{{label}}</label>
+    <input type="text" id$="{{name}}" tabindex="0" value$="{{text}}" on-focus="_toggleSelect" on-click="_toggleSelect" required$="{{required}}" readonly>
   </div>
 
   <br-select-box>
 
-    <input type="text" on-input="_onKeyPress" placeholder="Digite sua busca" tabindex="0">
+  <input type="text" class="search" on-input="_onKeyPress" placeholder="Digite sua busca" tabindex="0">
 
-    <ul class="list">
-      <template is="dom-repeat" items="{{options}}">
-        <li class="js-drop-content-item" on-click='_onItemSelected' data-value='{{item.key}}' tabindex="0">
-          <span>{{item.value}}</span>
-        </li>
-      </template>
-    </ul>
+  <ul class="list">
+    <template is="dom-repeat" items="{{options}}">
+      <li class="js-drop-content-item" on-click='_onItemSelected' data-value='{{item.key}}' tabindex="0">
+        <span>{{item.value}}</span>
+      </li>
+    </template>
+  </ul>
 
-  </br-select-box>
+</br-select-box>
 
 </template>
 
@@ -31,37 +31,30 @@
   Polymer({
     is: 'br-select',
     properties: {
-
       originalOptions: {
         type: Array,
         readyOnly: true
       },
-
       selectedItems: {
         type: Array,
         readOnly: true,
         value: []
       },
-
-      label: {
-        type: String
-      },
-
+      label: String,
+      text: String,
       options: {
         type: Array,
         value: []
       },
-
       multiselect: {
         type: Boolean,
         value: false
       },
-
       model: {
         type: Array,
         value: [],
         reflectToAttribute: true
-      },
+      }
     },
 
     /* -- Lifecycle ------------------------------------------------- */
@@ -82,16 +75,14 @@
     },
 
     _onKeyPress: function(e) {
-
       this.options = this._search(this.options, e.target.value);
 
       if(!e.target.value.trim())
         this.options = this.originalOptions;
     },
 
-    _onItemSelected: function(e){
-
-      if(this._isMultiSelect()){
+    _onItemSelected: function(e) {
+      if (this._isMultiSelect()) {
 
         if(e.target.classList.contains('is_selected')){
 
@@ -99,8 +90,8 @@
           e.target.classList.remove('is_selected');
           this.selectedItems.splice(index, 1);
 
-        }else{
-
+        }
+        else {
           var isDuplicated = this.selectedItems.some(function(item) {
             return item.id === e.target.dataValue;
           });
@@ -111,21 +102,21 @@
           e.target.classList.add('is_selected');
         }
 
-        if(this.selectedItems.length > 0)
-          this.label = '( ' + this.selectedItems.length + ' Selecionados ) ';
+        if (this.selectedItems.length > 0)
+          this.text = '( ' + this.selectedItems.length + ' Selecionados ) ';
         else
-          this.label = 'Selecione';
-
-      }else{
+          this.text = 'Selecione';
+      }
+      else {
         this._unselectAll();
         e.target.classList.toggle('is_selected');
-        this.label = e.target.innerText;
+        this.text = e.target.innerText;
         //this._closeSelectBox();
         this.selectedItems.push({ "key": e.target.dataValue, "value": e.target.innerText });
       }
 
       this.model = this.selectedItems;
-
+      this.$$('.form_field').classList.add('active');
     },
 
     _isMultiSelect: function(){
@@ -133,14 +124,12 @@
     },
 
     _unselectAll: function()  {
-
       var items = document.getElementsByClassName('js-drop-content-item');
 
       for (var i = 0; i < items.length; i++)
         items[i].classList.remove('is_selected');
 
       this.selectedItems.splice(0, this.selectedItems.length);
-
     },
 
     _arrayObjectIndexOf: function(myArray, searchTerm, property) {
@@ -152,11 +141,9 @@
     },
 
     _search: function(collection, query){
-
       return collection.filter(function(value, index, array){
         return array[index].value.toLowerCase().indexOf(query.toLowerCase()) !== -1;
       });
-
     }
 
     /* -- Public Methods -------------------------------------------- */
