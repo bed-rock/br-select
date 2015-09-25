@@ -8,7 +8,7 @@
 
   <div class="form_field  select">
     <label for$="{{name}}">{{label}}</label>
-    <input type="text" id$="{{name}}" tabindex="0" value$="{{text}}" on-focus="_open" on-click="_open" required$="{{required}}" readonly>
+    <input type="text" id$="{{name}}" tabindex="0" value$="{{text}}" on-click="_open" required$="{{required}}" readonly>
   </div>
 
   <br-select-box>
@@ -34,12 +34,7 @@
       originalOptions: {
         type: Array,
         readyOnly: true
-      },
-      selectedItems: {
-        type: Array,
-        readOnly: true,
-        value: []
-      },
+      },      
       label: String,
       text: String,
       options: {
@@ -51,8 +46,7 @@
         value: false
       },
       model: {
-        type: Array,
-        value: [],
+        type: String,
         reflectToAttribute: true
       }
     },
@@ -60,6 +54,7 @@
     /* -- Lifecycle ------------------------------------------------- */
 
     ready: function(){
+      this.selectedItems = [];
       this._setOriginalOptions(this.options);
     },
 
@@ -86,16 +81,17 @@
     },
 
     _onItemSelected: function(e) {
-      if (this._isMultiSelect()) {
+
+      if (this.multiselect) {
 
         if(e.target.classList.contains('is_selected')){
-
           var index = this._arrayObjectIndexOf(this.selectedItems, e.target.dataValue, "key");
           e.target.classList.remove('is_selected');
           this.selectedItems.splice(index, 1);
 
         }
         else {
+
           var isDuplicated = this.selectedItems.some(function(item) {
             return item.id === e.target.dataValue;
           });
@@ -115,16 +111,12 @@
         this._unselectAll();
         e.target.classList.toggle('is_selected');
         this.text = e.target.innerText;
-        //this._closeSelectBox();
+        this._close();
         this.selectedItems.push({ "key": e.target.dataValue, "value": e.target.innerText });
       }
 
       this.model = this.selectedItems;
       this.$$('.form_field').classList.add('active');
-    },
-
-    _isMultiSelect: function(){
-      return this.multiselect;
     },
 
     _unselectAll: function()  {
