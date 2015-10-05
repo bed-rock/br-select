@@ -8,7 +8,7 @@
 
   <div class="form_field  select">
     <label for$="{{name}}">{{label}}</label>
-    <input type="text" id$="{{name}}" tabindex="0" value$="{{text}}" model$="{{text}}" on-click="_open" required$="{{required}}" readonly>
+    <input type="text" id$="{{name}}" tabindex="0" value$="{{text}}" on-click="_open" required$="{{required}}" readonly>
   </div>
 
   <br-select-box>
@@ -34,13 +34,12 @@
       originalOptions: {
         type: Array,
         readyOnly: true
-      },
+      },      
       label: String,
       text: String,
       options: {
         type: Array,
-        value: [],
-        reflectToAttribute: true
+        value: []
       },
       multiselect: {
         type: Boolean,
@@ -98,7 +97,8 @@
           });
 
           if(!isDuplicated)
-            this.selectedItems = e.target.innerText;
+            this.selectedItems.push(e.target.innerText);
+            //this.selectedItems.push({ "key": e.target.dataValue, "value": e.target.innerText });
 
           e.target.classList.add('is_selected');
         }
@@ -113,11 +113,12 @@
         e.target.classList.toggle('is_selected');
         this.text = e.target.innerText;
         this._close();
-        console.log(this.text);
-        this.selectedItems = e.target.innerText
+        this.selectedItems.push(e.target.innerText);
+        //this.selectedItems.push({ "key": e.target.dataValue, "value": e.target.innerText });
       }
 
       this.model = this.selectedItems;
+      console.log(this.model);
       this.$$('.form_field').classList.add('active');
     },
 
@@ -127,7 +128,7 @@
       for (var i = 0; i < items.length; i++)
         items[i].classList.remove('is_selected');
 
-
+      this.selectedItems.splice(0, this.selectedItems.length);
     },
 
     _arrayObjectIndexOf: function(myArray, searchTerm, property) {
