@@ -58,6 +58,12 @@
       this._setOriginalOptions(this.options);
     },
 
+    attached: function(){
+      this.async(function () {
+        this._setOriginalOptions(this.options);
+      }, 1);
+    },
+
     /* -- Private Methods ------------------------------------------- */
 
     _setOriginalOptions: function(options){
