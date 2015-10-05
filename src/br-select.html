@@ -97,7 +97,8 @@
           });
 
           if(!isDuplicated)
-            this.selectedItems.push({ "key": e.target.dataValue, "value": e.target.innerText });
+            this.selectedItems.push(e.target.innerText);
+            //this.selectedItems.push({ "key": e.target.dataValue, "value": e.target.innerText });
 
           e.target.classList.add('is_selected');
         }
@@ -112,10 +113,12 @@
         e.target.classList.toggle('is_selected');
         this.text = e.target.innerText;
         this._close();
-        this.selectedItems.push({ "key": e.target.dataValue, "value": e.target.innerText });
+        this.selectedItems.push(e.target.innerText);
+        //this.selectedItems.push({ "key": e.target.dataValue, "value": e.target.innerText });
       }
 
       this.model = this.selectedItems;
+      console.log(this.model);
       this.$$('.form_field').classList.add('active');
     },
 
