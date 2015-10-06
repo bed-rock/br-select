@@ -73,7 +73,7 @@
 
     _open: function(event){
       event.stopPropagation();
-      Polymer.dom(this.root).querySelector('br-select-box').classList.add('open');
+      Polymer.dom(this.root).querySelector('br-select-box').classList.toggle('open');
     },
 
     _close: function(){
