@@ -47,7 +47,8 @@
       },
       model: {
         type: String,
-        reflectToAttribute: true
+        reflectToAttribute: true,
+        notify: true
       }
     },
 
@@ -149,9 +150,9 @@
       return collection.filter(function(value, index, array){
         return array[index].value.toLowerCase().indexOf(query.toLowerCase()) !== -1;
       });
-    } 
+    },
 
-    /* -- Public Methods -------------------------------------------- */
+    /* -- Public Methods -------------------------------------------- */   
 
   });
 </script>
