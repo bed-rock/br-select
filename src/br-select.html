@@ -17,9 +17,7 @@
 
   <ul class="list">
     <template is="dom-repeat" items="{{options}}">
-      <li class="js-drop-content-item" on-click='_onItemSelected' data-value='{{item.key}}' tabindex="0">
-        <span>{{item.value}}</span>
-      </li>
+      <li class="js-drop-content-item" on-click='_onItemSelected' data-value='{{item.key}}' tabindex="0">{{item.value}}</li>
     </template>
   </ul>
 
