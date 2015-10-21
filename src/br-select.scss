@@ -15,6 +15,7 @@
 .search {
   padding: 0 1rem;
   flex-grow: 0;
+  flex-shrink: 0;
 
   &:hover,
   &:focus {
