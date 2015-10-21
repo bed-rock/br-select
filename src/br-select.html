@@ -10,7 +10,7 @@
       <input type="text" class="search" on-keyUp="_onKeyPress" placeholder="Digite sua busca" tabindex="0">
       <ul class="list">
         <template is="dom-repeat" items="{{options}}">
-          <li id$="{{computeId(item.key)}}" class="js-drop-content-item" on-click='_onItemSelected' data-value='{{item.key}}' tabindex="0">{{item.value}}</li>
+          <li id$="{{_computeId(item.key)}}" class="js-drop-content-item" on-click='_onItemSelected' data-value='{{item.key}}' tabindex="0">{{item.value}}</li>
         </template>
       </ul>
     </br-select-box>
@@ -119,15 +119,22 @@
 
       _setText: function ( model ) {
         if ( !!this.originalOptions && this.originalOptions.length > 0 ) {
+
           var element = this.originalOptions.filter( function ( item ) {
             return item.key == model;
           } );
           this.text = element[0].value;
+
           this.$$( '.form_field' ).classList.add( 'active' );
+
+          this.async( function () {
+            var selectedItem = this.$$( '#item' + model );
+            selectedItem.classList.add( 'is_selected' );
+          } );
         }
       },
 
-      computeId: function ( key ) {
+      _computeId: function ( key ) {
         return "item" + key;
       },
 
