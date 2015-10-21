@@ -1,5 +1,4 @@
 <link rel="import" type="html" href="../../br-select-box/src/br-select-box.html">
-
 <dom-module id="br-select">
   <link rel="import" type="css" href="../dist/css/br-select.min.css">
   <template>
@@ -18,18 +17,20 @@
   </template>
   <script>
 
-    Polymer({
+    Polymer( {
       is: 'br-select',
       properties: {
         originalOptions: {
           type: Array,
+          value: [],
           readyOnly: true
         },
         label: String,
         text: String,
         options: {
           type: Array,
-          value: []
+          value: [],
+          observer: '_onOptionsChanged'
         },
         multiselect: {
           type: Boolean,
@@ -39,7 +40,7 @@
           type: String,
           reflectToAttribute: true,
           notify: true,
-          observer: '_onModelChange'
+          observer: '_onModelChanged'
         }
       },
 
@@ -47,135 +48,114 @@
 
       ready: function () {
         this.selectedItems = [];
-        this._setOriginalOptions(this.options);
-      },
-
-      attached: function () {
-        this.async(function () {
-          this._setOriginalOptions(this.options);
-        }, 1);
       },
 
       /* -- Private Methods ------------------------------------------- */
 
-      _setOriginalOptions: function (options) {
+      _setOriginalOptions: function ( options ) {
         this.originalOptions = options;
       },
 
-      _open: function (event) {
+      _open: function ( event ) {
         event.stopPropagation();
-        Polymer.dom(this.root).querySelector('br-select-box').classList.toggle('open');
+        Polymer.dom( this.root ).querySelector( 'br-select-box' ).classList.toggle( 'open' );
       },
 
       _close: function () {
-        Polymer.dom(this.root).querySelector('br-select-box').classList.remove('open');
+        Polymer.dom( this.root ).querySelector( 'br-select-box' ).classList.remove( 'open' );
       },
 
-      _onKeyPress: function (e) {
+      _onKeyPress: function ( e ) {
+        this.options = this._search( this.options, e.target.value );
 
-        this.options = this._search(this.options, e.target.value);
-
-        if (e.keyCode === 8)
-          this.options = this._search(this.originalOptions, e.target.value);
+        if ( e.keyCode === 8 )
+          this.options = this._search( this.originalOptions, e.target.value );
       },
 
-      _onItemSelected: function (e) {
+      _onItemSelected: function ( e ) {
+        if ( this.multiselect ) {
 
-        if (this.multiselect) {
-
-          if (e.target.classList.contains('is_selected')) {
-            var index = this._arrayObjectIndexOf(this.selectedItems, e.target.dataValue, "key");
-            e.target.classList.remove('is_selected');
-            this.selectedItems.splice(index, 1);
-
+          if ( e.target.classList.contains( 'is_selected' ) ) {
+            var index = this._arrayObjectIndexOf( this.selectedItems, e.target.dataValue, "key" );
+            e.target.classList.remove( 'is_selected' );
+            this.selectedItems.splice( index, 1 );
           }
           else {
-
-            var isDuplicated = this.selectedItems.some(function (item) {
+            var isDuplicated = this.selectedItems.some( function ( item ) {
               return item.id === e.target.dataValue;
-            });
+            } );
 
-            if (!isDuplicated)
-              this.selectedItems.push(e.target.dataValue);
+            if ( !isDuplicated )
+              this.selectedItems.push( e.target.dataValue );
 
-            e.target.classList.add('is_selected');
+            e.target.classList.add( 'is_selected' );
           }
 
-          if (this.selectedItems.length > 0)
+          if ( this.selectedItems.length > 0 )
             this.text = '( ' + this.selectedItems.length + ' Selecionados ) ';
           else
             this.text = 'Selecione';
 
           this.model = this.selectedItems;
-
         }
         else {
           this._unselectAll();
-          e.target.classList.toggle('is_selected');
+          e.target.classList.toggle( 'is_selected' );
           this.text = e.target.innerText;
           this._close();
           this.model = e.target.dataValue;
         }
-
-        this.$$('.form_field').classList.add('active');
+        this.$$( '.form_field' ).classList.add( 'active' );
       },
 
-      _onModelChange: function (model) {
+      _onModelChanged: function () {
+        this._setText( this.model );
+      },
 
-        if (!!this.originalOptions && this.originalOptions.length !== 0) {
+      _onOptionsChanged: function () {
+        this._setOriginalOptions( this.options );
+        this._setText( this.model );
+      },
 
-          var element = this.originalOptions.filter(function (item) {
+      _setText: function ( model ) {
+        if ( !!this.originalOptions && this.originalOptions.length > 0 ) {
+          var element = this.originalOptions.filter( function ( item ) {
             return item.key == model;
-          });
-
+          } );
           this.text = element[0].value;
-          this.$$('.form_field').classList.add('active');
-
+          this.$$( '.form_field' ).classList.add( 'active' );
         }
       },
 
-      setSelectedItem: function (key) {
-
-        this.async(function () {
-          var element = Polymer.dom(this.root).querySelector('#item' + key);
-          element.classList.add('is_selected');
-          this.text = element.innerText;
-          this.$$('.form_field').classList.add('active');
-        }, 1);
-
-      },
-
-      computeId: function (key) {
+      computeId: function ( key ) {
         return "item" + key;
       },
 
       _unselectAll: function () {
-        var items = document.getElementsByClassName('js-drop-content-item');
+        var items = document.getElementsByClassName( 'js-drop-content-item' );
 
-        for (var i = 0; i < items.length; i++)
-          items[i].classList.remove('is_selected');
+        for ( var i = 0; i < items.length; i++ )
+          items[i].classList.remove( 'is_selected' );
 
-        this.selectedItems.splice(0, this.selectedItems.length);
+        this.selectedItems.splice( 0, this.selectedItems.length );
       },
 
-      _arrayObjectIndexOf: function (myArray, searchTerm, property) {
-
-        for (var i = 0, len = myArray.length; i < len; i++) {
-          if (myArray[i][property] === searchTerm) return i;
+      _arrayObjectIndexOf: function ( myArray, searchTerm, property ) {
+        for ( var i = 0, len = myArray.length; i < len; i++ ) {
+          if ( myArray[i][property] === searchTerm ) return i;
         }
         return -1;
       },
 
-      _search: function (collection, query) {
-        return collection.filter(function (value, index, array) {
-          return array[index].value.toLowerCase().indexOf(query.toLowerCase()) !== -1;
-        });
+      _search: function ( collection, query ) {
+        return collection.filter( function ( value, index, array ) {
+          return array[index].value.toLowerCase().indexOf( query.toLowerCase() ) !== -1;
+        } );
       },
 
       /* -- Public Methods -------------------------------------------- */
 
-    });
+    } );
 
   </script>
-
 </dom-module>
