@@ -1,128 +1,130 @@
 <link rel="import" type="html" href="../../br-select-box/src/br-select-box.html">
 <dom-module id="br-select">
-  <link rel="import" type="css" href="../dist/css/br-select.min.css">
-  <template>
-    <div class="form_field  select">
-      <label for$="{{name}}">{{label}}</label>
-      <input type="text" id$="{{name}}" tabindex="0" value="{{text}}" on-click="_open" required$="{{required}}" readonly>
-    </div>
-    <br-select-box>
-      <input type="text" class="search" on-keyUp="_onKeyPress" placeholder="Digite sua busca" tabindex="0">
-      <ul class="list">
-        <template is="dom-repeat" items="{{options}}">
-          <li id$="{{_computeId(item.key)}}" class="js-drop-content-item" on-click='_onItemSelected' data-value='{{item.key}}' tabindex="0">{{item.value}}</li>
-        </template>
-      </ul>
-    </br-select-box>
-  </template>
-  <script>
+<link rel="import" type="css" href="../dist/css/br-select.min.css">
+<template>
+  <div class="form_field  select">
+    <label for$="{{name}}">{{label}}</label>
+    <input type="text" id$="{{name}}" tabindex="0" value="{{text}}" on-click="_open" required$="{{required}}" readonly>
+  </div>
+  <br-select-box>
+  <input type="text" class="search" on-keyUp="_onKeyPress" placeholder="Digite sua busca" tabindex="0">
+  <ul class="list">
+    <template is="dom-repeat" items="{{options}}">
+      <li id$="{{_computeId(item.key)}}" class="js-drop-content-item" on-click='_onItemSelected' data-value='{{item.key}}' tabindex="0">{{item.value}}</li>
+    </template>
+  </ul>
+</br-select-box>
+</template>
+<script>
 
-    Polymer( {
-      is: 'br-select',
-      properties: {
-        originalOptions: {
-          type: Array,
-          value: [],
-          readyOnly: true
-        },
-        label: String,
-        text: String,
-        options: {
-          type: Array,
-          value: [],
-          observer: '_onOptionsChanged'
-        },
-        multiselect: {
-          type: Boolean,
-          value: false
-        },
-        model: {
-          type: String,
-          reflectToAttribute: true,
-          notify: true,
-          observer: '_onModelChanged'
-        }
+  Polymer( {
+    is: 'br-select',
+    properties: {
+      originalOptions: {
+        type: Array,
+        value: [],
+        readyOnly: true
       },
-
-      /* -- Lifecycle ------------------------------------------------- */
-
-      ready: function () {
-        this.selectedItems = [];
+      label: String,
+      text: String,
+      options: {
+        type: Array,
+        value: [],
+        observer: '_onOptionsChanged'
       },
-
-      /* -- Private Methods ------------------------------------------- */
-
-      _setOriginalOptions: function ( options ) {
-        this.originalOptions = options;
+      multiselect: {
+        type: Boolean,
+        value: false
       },
+      model: {
+        type: String,
+        reflectToAttribute: true,
+        notify: true,
+        observer: '_onModelChanged'
+      }
+    },
 
-      _open: function ( event ) {
-        event.stopPropagation();
-        Polymer.dom( this.root ).querySelector( 'br-select-box' ).classList.toggle( 'open' );
-      },
+    /* -- Lifecycle ------------------------------------------------- */
 
-      _close: function () {
-        Polymer.dom( this.root ).querySelector( 'br-select-box' ).classList.remove( 'open' );
-      },
+    ready: function () {
+      this.selectedItems = [];
+    },
 
-      _onKeyPress: function ( e ) {
-        this.options = this._search( this.options, e.target.value );
+    /* -- Private Methods ------------------------------------------- */
 
-        if ( e.keyCode === 8 )
-          this.options = this._search( this.originalOptions, e.target.value );
-      },
+    _setOriginalOptions: function ( options ) {
+      this.originalOptions = options;
+    },
 
-      _onItemSelected: function ( e ) {
-        if ( this.multiselect ) {
+    _open: function ( event ) {
+      event.stopPropagation();
+      Polymer.dom( this.root ).querySelector( 'br-select-box' ).classList.toggle( 'open' );
+    },
 
-          if ( e.target.classList.contains( 'is_selected' ) ) {
-            var index = this._arrayObjectIndexOf( this.selectedItems, e.target.dataValue, "key" );
-            e.target.classList.remove( 'is_selected' );
-            this.selectedItems.splice( index, 1 );
-          }
-          else {
-            var isDuplicated = this.selectedItems.some( function ( item ) {
-              return item.id === e.target.dataValue;
-            } );
+    _close: function () {
+      Polymer.dom( this.root ).querySelector( 'br-select-box' ).classList.remove( 'open' );
+    },
 
-            if ( !isDuplicated )
-              this.selectedItems.push( e.target.dataValue );
+    _onKeyPress: function ( e ) {
+      this.options = this._search( this.options, e.target.value );
 
-            e.target.classList.add( 'is_selected' );
-          }
+      if ( e.keyCode === 8 )
+        this.options = this._search( this.originalOptions, e.target.value );
+    },
 
-          if ( this.selectedItems.length > 0 )
-            this.text = '( ' + this.selectedItems.length + ' Selecionados ) ';
-          else
-            this.text = 'Selecione';
+    _onItemSelected: function ( e ) {
+      if ( this.multiselect ) {
 
-          this.model = this.selectedItems;
+        if ( e.target.classList.contains( 'is_selected' ) ) {
+          var index = this._arrayObjectIndexOf( this.selectedItems, e.target.dataValue, "key" );
+          e.target.classList.remove( 'is_selected' );
+          this.selectedItems.splice( index, 1 );
         }
         else {
-          this._unselectAll();
-          e.target.classList.toggle( 'is_selected' );
-          this.text = e.target.innerText;
-          this._close();
-          this.model = e.target.dataValue;
-        }
-        this.$$( '.form_field' ).classList.add( 'active' );
-      },
-
-      _onModelChanged: function () {
-        this._setText( this.model );
-      },
-
-      _onOptionsChanged: function () {
-        this._setOriginalOptions( this.options );
-        this._setText( this.model );
-      },
-
-      _setText: function ( model ) {
-        if ( !!this.originalOptions && this.originalOptions.length > 0 ) {
-
-          var element = this.originalOptions.filter( function ( item ) {
-            return item.key == model;
+          var isDuplicated = this.selectedItems.some( function ( item ) {
+            return item.id === e.target.dataValue;
           } );
+
+          if ( !isDuplicated )
+            this.selectedItems.push( e.target.dataValue );
+
+          e.target.classList.add( 'is_selected' );
+        }
+
+        if ( this.selectedItems.length > 0 )
+          this.text = '( ' + this.selectedItems.length + ' Selecionados ) ';
+        else
+          this.text = 'Selecione';
+
+        this.model = this.selectedItems;
+      }
+      else {
+        this._unselectAll();
+        e.target.classList.toggle( 'is_selected' );
+        this.text = e.target.innerText;
+        this._close();
+        this.model = e.target.dataValue;
+      }
+      this.$$( '.form_field' ).classList.add( 'active' );
+    },
+
+    _onModelChanged: function () {
+      this._setText( this.model );
+    },
+
+    _onOptionsChanged: function () {
+      this._setOriginalOptions( this.options );
+      this._setText( this.model );
+    },
+
+    _setText: function ( model ) {
+      if ( !!this.originalOptions && this.originalOptions.length > 0 ) {
+
+        var element = this.originalOptions.filter( function ( item ) {
+          return item.key == model;
+        } );
+
+        if (element.length > 0) {
           this.text = element[0].value;
 
           this.$$( '.form_field' ).classList.add( 'active' );
@@ -132,37 +134,39 @@
             selectedItem.classList.add( 'is_selected' );
           } );
         }
-      },
+        
+      }
+    },
 
-      _computeId: function ( key ) {
-        return "item" + key;
-      },
+    _computeId: function ( key ) {
+      return "item" + key;
+    },
 
-      _unselectAll: function () {
-        var items = document.getElementsByClassName( 'js-drop-content-item' );
+    _unselectAll: function () {
+      var items = document.getElementsByClassName( 'js-drop-content-item' );
 
-        for ( var i = 0; i < items.length; i++ )
-          items[i].classList.remove( 'is_selected' );
+      for ( var i = 0; i < items.length; i++ )
+        items[i].classList.remove( 'is_selected' );
 
-        this.selectedItems.splice( 0, this.selectedItems.length );
-      },
+      this.selectedItems.splice( 0, this.selectedItems.length );
+    },
 
-      _arrayObjectIndexOf: function ( myArray, searchTerm, property ) {
-        for ( var i = 0, len = myArray.length; i < len; i++ ) {
-          if ( myArray[i][property] === searchTerm ) return i;
-        }
-        return -1;
-      },
+    _arrayObjectIndexOf: function ( myArray, searchTerm, property ) {
+      for ( var i = 0, len = myArray.length; i < len; i++ ) {
+        if ( myArray[i][property] === searchTerm ) return i;
+      }
+      return -1;
+    },
 
-      _search: function ( collection, query ) {
-        return collection.filter( function ( value, index, array ) {
-          return array[index].value.toLowerCase().indexOf( query.toLowerCase() ) !== -1;
-        } );
-      },
+    _search: function ( collection, query ) {
+      return collection.filter( function ( value, index, array ) {
+        return array[index].value.toLowerCase().indexOf( query.toLowerCase() ) !== -1;
+      } );
+    },
 
-      /* -- Public Methods -------------------------------------------- */
+    /* -- Public Methods -------------------------------------------- */
 
-    } );
+  } );
 
-  </script>
+</script>
 </dom-module>
