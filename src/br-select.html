@@ -4,7 +4,7 @@
 <template>
   <div class="form_field  select">
     <label for$="{{name}}">{{label}}</label>
-    <input type="text" id$="{{name}}" tabindex="0" value="{{text}}" on-click="_open" required$="{{required}}" readonly>
+    <input type="text" id$="{{name}}" tabindex="0" value="{{text}}" on-click="_open" required$="{{required}}" disabled$="{{disabled}}" readonly>
   </div>
   <br-select-box>
   <input type="text" class="search" on-keyUp="_onKeyPress" placeholder="Digite sua busca" tabindex="0">
@@ -41,7 +41,8 @@
         reflectToAttribute: true,
         notify: true,
         observer: '_onModelChanged'
-      }
+      },
+      disabled: Boolean
     },
 
     /* -- Lifecycle ------------------------------------------------- */
