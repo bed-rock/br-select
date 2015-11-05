@@ -48,6 +48,7 @@
     /* -- Lifecycle ------------------------------------------------- */
 
     ready: function () {
+      this.isValidForm = false;
       this.selectedItems = [];
     },
 
@@ -107,6 +108,8 @@
         this.model = e.target.dataValue;
       }
       this.$$( '.form_field' ).classList.add( 'active' );
+      this.isValidForm = true;
+      this.fire('on-item-selected');        
     },
 
     _onModelChanged: function () {
