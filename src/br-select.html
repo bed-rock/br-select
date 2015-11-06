@@ -48,7 +48,12 @@
     /* -- Lifecycle ------------------------------------------------- */
 
     ready: function () {
-      this.isValidForm = false;
+
+      if(this.required)
+        this.isValidForm = false;
+      else
+        this.isValidForm = true;
+
       this.selectedItems = [];
     },
 
