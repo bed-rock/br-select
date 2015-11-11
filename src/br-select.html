@@ -44,6 +44,7 @@
         },
         disabled: Boolean,
         required: Boolean
+
       },
 
       /* -- Lifecycle ------------------------------------------------- */
@@ -122,20 +123,20 @@
         }
         this.$$('.form_field').classList.add('active');
         this.isValidForm = true;
-        this.fire('on-item-selected');
+        this.fire('on-br-select-selected');
       },
 
       _onModelChanged: function () {
-        this._setText(this.model);
+        this._setSelectedItem(this.model);                
       },
 
       _onOptionsChanged: function () {
-        this._setText(this.model);
+        this._setSelectedItem(this.model);
       },
 
-      _setText: function (model) {
+      _setSelectedItem: function (model) {
 
-        if (!!this.options && this.options.length > 0) {
+        if (this.options && this.options.length > 0) {
 
           var element = this.options.filter(function (item) {
             return item.key == model;
@@ -148,11 +149,13 @@
 
             this.async(function () {
               var selectedItem = this.$$('#item' + model);
-              selectedItem.classList.add('is_selected');
-            });
-          }
-
+              selectedItem.classList.add('is_selected');              
+            });            
+          }          
         }
+
+        this.isValidForm = true;
+        
       },
 
       _computeId: function (key) {
