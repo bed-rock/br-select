@@ -83,12 +83,12 @@
       _onKeyPress: function (e) {
         this.options = this._search(this.options, e.target.value);
 
-
         if (e.keyCode === 8)
           this.options = this._search(this.originalOptions, e.target.value);
       },
 
       _onItemSelected: function (e) {
+
         if (this.multiselect) {
 
           if (e.target.classList.contains('is_selected')) {
@@ -122,16 +122,25 @@
           this.model = e.target.dataValue;
         }
         this.$$('.form_field').classList.add('active');
-        this.isValidForm = true;
-        this.fire('on-br-select-selected');
       },
 
       _onModelChanged: function () {
-        this._setSelectedItem(this.model);                
+
+        this.async(function () {
+          if (!!this.model) {
+            this._setSelectedItem(this.model);
+            this.isValidForm = true;
+            this.fire('on-br-select-selected');
+          }
+        });
+
       },
 
       _onOptionsChanged: function () {
-        this._setSelectedItem(this.model);
+        this.async(function () {
+          if (!!this.model)
+            this._setSelectedItem(this.model);
+        });
       },
 
       _setSelectedItem: function (model) {
@@ -149,13 +158,11 @@
 
             this.async(function () {
               var selectedItem = this.$$('#item' + model);
-              selectedItem.classList.add('is_selected');              
-            });            
-          }          
+              selectedItem.classList.add('is_selected');
+            });
+          }
         }
 
-        this.isValidForm = true;
-        
       },
 
       _computeId: function (key) {
