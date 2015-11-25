@@ -2,15 +2,15 @@
 <dom-module id="br-select">
   <link rel="import" type="css" href="../dist/css/br-select.min.css">
   <template>
-    <div class="form_field  select">
-      <label for$="{{name}}">{{label}}</label>
-      <input type="text" id$="{{name}}" tabindex="0" value="{{text}}" on-click="_open" required$="{{required}}" disabled$="{{disabled}}" readonly>
-    </div>
+
+    <label for$="{{name}}">{{label}}</label>
+    <input type="text" id$="{{name}}" value="{{text}}" on-click="_open" required$="{{required}}" disabled$="{{disabled}}" readonly>
+
     <br-select-box>
-      <input type="text" class="search" on-keyUp="_onKeyPress" placeholder="Digite sua busca" tabindex="0">
+      <input type="text" class="input_search" value="{{filterVal::input}}" placeholder="Digite sua busca">
       <ul class="list">
-        <template is="dom-repeat" items="{{options}}">
-          <li id$="{{_computeId(item.key)}}" class="js-drop-content-item" on-click='_onItemSelected' data-value='{{item.key}}' tabindex="0">{{item.value}}</li>
+        <template is="dom-repeat" items="{{options}}" filter="{{_filter(filterVal)}}">
+          <li id$="{{_computeId(item.key)}}" class="js-drop-content-item" on-click='_onItemSelected' data-key="{{item.key}}" tabindex="-1">{{item.value}}</li>
         </template>
       </ul>
     </br-select-box>
@@ -20,11 +20,6 @@
     Polymer({
       is: 'br-select',
       properties: {
-        originalOptions: {
-          type: Array,
-          value: [],
-          readyOnly: true
-        },
         label: String,
         text: String,
         options: {
@@ -44,7 +39,6 @@
         },
         disabled: Boolean,
         required: Boolean
-
       },
 
       /* -- Lifecycle ------------------------------------------------- */
@@ -57,34 +51,19 @@
           this.isValidForm = true;
 
         this.selectedItems = [];
-      },
 
-      attached: function () {
-        this.async(function () {
-          this.setOriginalOptions(this.options);
-        }, 1);
+        this.classList.add( 'form_field', 'select' );
       },
 
       /* -- Private Methods ------------------------------------------- */
 
-      setOriginalOptions: function (options) {
-        this.originalOptions = options;
-      },
-
       _open: function (event) {
         event.stopPropagation();
-        Polymer.dom(this.root).querySelector('br-select-box').classList.toggle('open');
+        this.$$('br-select-box').classList.toggle('open');
       },
 
       _close: function () {
-        Polymer.dom(this.root).querySelector('br-select-box').classList.remove('open');
-      },
-
-      _onKeyPress: function (e) {
-        this.options = this._search(this.options, e.target.value);
-
-        if (e.keyCode === 8)
-          this.options = this._search(this.originalOptions, e.target.value);
+        this.$$( 'br-select-box' ).classList.remove( 'open' );
       },
 
       _onItemSelected: function (e) {
@@ -92,17 +71,17 @@
         if (this.multiselect) {
 
           if (e.target.classList.contains('is_selected')) {
-            var index = this._arrayObjectIndexOf(this.selectedItems, e.target.dataValue, "key");
+            var index = this._arrayObjectIndexOf(this.selectedItems, e.target.dataKey, "key");
             e.target.classList.remove('is_selected');
             this.selectedItems.splice(index, 1);
           }
           else {
             var isDuplicated = this.selectedItems.some(function (item) {
-              return item.id === e.target.dataValue;
+              return item.id === e.target.dataKey;
             });
 
             if (!isDuplicated)
-              this.selectedItems.push(e.target.dataValue);
+              this.selectedItems.push(e.target.dataKey);
 
             e.target.classList.add('is_selected');
           }
@@ -114,14 +93,17 @@
 
           this.model = this.selectedItems;
         }
+
         else {
           this._unselectAll();
           e.target.classList.toggle('is_selected');
           this.text = e.target.innerText;
           this._close();
-          this.model = e.target.dataValue;
+          this.model = e.target.dataKey;
+          this.fire( 'on-br-select-select', { key: e.target.dataKey } );
         }
-        this.$$('.form_field').classList.add('active');
+
+        this.classList.add('active');
       },
 
       _onModelChanged: function () {
@@ -140,7 +122,7 @@
         this.async(function () {
           if (!!this.model)
             this._setSelectedItem(this.model);
-        });
+        } );
       },
 
       _setSelectedItem: function (model) {
@@ -154,7 +136,7 @@
           if (element.length > 0) {
             this.text = element[0].value;
 
-            this.$$('.form_field').classList.add('active');
+            this.classList.add('active');
 
             this.async(function () {
               var selectedItem = this.$$('#item' + model);
@@ -178,18 +160,21 @@
         this.selectedItems.splice(0, this.selectedItems.length);
       },
 
-      _arrayObjectIndexOf: function (myArray, searchTerm, property) {
-        for (var i = 0, len = myArray.length; i < len; i++) {
-          if (myArray[i][property] === searchTerm) return i;
-        }
-        return -1;
+      _filter: function ( val ) {
+        return function ( options ) {
+          if ( !val )
+            return true;
+          if ( !options )
+            return false;
+          return ( options.value && ~options.value.toLowerCase().indexOf( val.toLowerCase() ) );
+        };
       },
 
-      _search: function (collection, query) {
-        return collection.filter(function (value, index, array) {
-          return array[index].value.toLowerCase().indexOf(query.toLowerCase()) !== -1;
-        });
-      },
+      clear: function () {
+        this.model = '';
+        this.text = '';
+        this.classList.remove( 'active' );
+      }
 
       /* -- Public Methods -------------------------------------------- */
 
