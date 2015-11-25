@@ -170,13 +170,20 @@
         };
       },
 
+      _arrayObjectIndexOf: function (myArray, searchTerm, property) {
+        for (var i = 0, len = myArray.length; i < len; i++) {
+          if (myArray[i][property] === searchTerm) return i;
+        }
+        return -1;
+      },
+
+      /* -- Public Methods -------------------------------------------- */
+
       clear: function () {
         this.model = '';
         this.text = '';
         this.classList.remove( 'active' );
       }
-
-      /* -- Public Methods -------------------------------------------- */
 
     });
 
