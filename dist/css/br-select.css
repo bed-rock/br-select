@@ -1,13 +1,4 @@
-:host {
-  position: relative;
-  display: block;
-  -webkit-user-select: none;
-     -moz-user-select: none;
-      -ms-user-select: none;
-          user-select: none;
-}
-
-.search {
+.input_search {
   padding: 0 1rem;
   -webkit-flex-grow: 0;
       -ms-flex-positive: 0;
@@ -16,6 +7,6 @@
       -ms-flex-negative: 0;
           flex-shrink: 0;
 }
-.search:hover, .search:focus {
+.input_search:hover, .input_search:focus {
   background-color: #fff;
 }
