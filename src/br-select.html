@@ -8,7 +8,7 @@
 
     <br-select-box>
       <input type="text" class="input_search" value="{{filterVal::input}}" placeholder="Digite sua busca">
-      <ul class="list">
+      <ul id="list" class="list">
         <template is="dom-repeat" items="{{options}}" filter="{{_filter(filterVal)}}">
           <li id$="{{_computeId(item.key)}}" class="js-drop-content-item" on-click='_onItemSelected' data-key="{{item.key}}" tabindex="-1">{{item.value}}</li>
         </template>
@@ -109,11 +109,13 @@
       _onModelChanged: function () {
 
         this.async(function () {
-          if (!!this.model) {
-            this._setSelectedItem(this.model);
+          if ( !!this.model ) {
+            this._setSelectedItem( this.model );
             this.isValidForm = true;
-            this.fire('on-br-select-selected');
+            this.fire( 'on-br-select-selected' );
           }
+          else
+            this.clear();
         });
 
       },
@@ -152,7 +154,7 @@
       },
 
       _unselectAll: function () {
-        var items = document.getElementsByClassName('js-drop-content-item');
+        var items = this.$.list.getElementsByClassName('js-drop-content-item');
 
         for (var i = 0; i < items.length; i++)
           items[i].classList.remove('is_selected');
@@ -180,9 +182,9 @@
       /* -- Public Methods -------------------------------------------- */
 
       clear: function () {
-        this.model = '';
-        this.text = '';
         this.classList.remove( 'active' );
+        this.text = '';
+        this._unselectAll();
       }
 
     });
