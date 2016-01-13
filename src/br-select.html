@@ -100,7 +100,7 @@
           this.text = e.target.innerText;
           this._close();
           this.model = e.target.dataKey;
-          this.fire( 'on-br-select-select', { key: e.target.dataKey } );
+          this.fire( 'on-br-select-select', { key: e.target.dataKey, value: e.target.innerText } );
         }
 
         this.classList.add('active');
@@ -182,9 +182,11 @@
       /* -- Public Methods -------------------------------------------- */
 
       clear: function () {
-        this.classList.remove( 'active' );
         this.text = '';
+        this.model = '';
+        this.isValidForm = false;
         this._unselectAll();
+        this.classList.remove( 'active' );
       }
 
     });
