@@ -9,7 +9,7 @@
     <br-select-box>
       <input type="text" class="input_search" value="{{filterVal::input}}" placeholder="Digite sua busca">
       <ul id="list" class="list">
-        <template is="dom-repeat" items="{{options}}" filter="{{_filter(filterVal)}}">
+        <template id="templateList" is="dom-repeat" items="{{options}}" filter="{{_filter(filterVal)}}">
           <li id$="{{_computeId(item.key)}}" class="js-drop-content-item" on-click='_onItemSelected' data-key="{{item.key}}" tabindex="-1">{{item.value}}</li>
         </template>
       </ul>
@@ -95,12 +95,21 @@
         }
 
         else {
+
+          var item;
+          if ( event.type == 'click' ) {
+            item = this.$.templateList.itemForElement( event.target );
+          }
+          else if ( event.type == 'keys-pressed' ) {
+            item = this.$.templateList.itemForElement( event.detail.keyboardEvent.target );
+          }
+
           this._unselectAll();
           e.target.classList.toggle('is_selected');
           this.text = e.target.innerText;
           this._close();
           this.model = e.target.dataKey;
-          this.fire( 'on-br-select-select', { key: e.target.dataKey, value: e.target.innerText } );
+          this.fire( 'on-br-select-select', { key: e.target.dataKey, value: e.target.innerText, item: item } );
         }
 
         this.classList.add('active');
