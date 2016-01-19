@@ -3,17 +3,23 @@
   <link rel="import" type="css" href="../dist/css/br-select.min.css">
   <template>
 
+    <!--TODO <array-selector id="selector" items="{{options}}" selected="{{selected}}" toggle></array-selector>-->
+
     <label for$="{{name}}">{{label}}</label>
+
     <input type="text" id$="{{name}}" value="{{text}}" on-click="_open" required$="{{required}}" disabled$="{{disabled}}" readonly>
 
     <br-select-box>
       <input type="text" class="input_search" value="{{filterVal::input}}" placeholder="Digite sua busca">
+
       <ul id="list" class="list">
         <template id="templateList" is="dom-repeat" items="{{options}}" filter="{{_filter(filterVal)}}">
           <li id$="{{_computeId(item.key)}}" class="js-drop-content-item" on-click='_onItemSelected' data-key="{{item.key}}" tabindex="-1">{{item.value}}</li>
         </template>
       </ul>
+
     </br-select-box>
+
   </template>
   <script>
 
@@ -25,7 +31,7 @@
         options: {
           type: Array,
           value: [],
-          observer: '_onOptionsChanged'
+          observer: '_optionsChanged'
         },
         multiselect: {
           type: Boolean,
@@ -35,24 +41,27 @@
           type: String,
           reflectToAttribute: true,
           notify: true,
-          observer: '_onModelChanged'
+          observer: '_modelChanged'
         },
         disabled: Boolean,
-        required: Boolean
+        required: {
+          type: Boolean,
+          value: false,
+          observer: '_requiredChanged'
+        },
       },
 
       /* -- Lifecycle ------------------------------------------------- */
 
       ready: function () {
 
-        if (this.required)
-          this.isValidForm = false;
-        else
-          this.isValidForm = true;
+        this.isValidForm = true;
 
+        this.dirty = false;
         this.selectedItems = [];
 
         this.classList.add( 'form_field', 'select' );
+
       },
 
       /* -- Private Methods ------------------------------------------- */
@@ -66,7 +75,9 @@
         this.$$( 'br-select-box' ).classList.remove( 'open' );
       },
 
-      _onItemSelected: function (e) {
+      _onItemSelected: function ( event ) {
+
+        this.dirty = true;
 
         if (this.multiselect) {
 
@@ -95,66 +106,96 @@
         }
 
         else {
-
-          var item;
+          //var item;
           if ( event.type == 'click' ) {
-            item = this.$.templateList.itemForElement( event.target );
+            //item = this.$.templateList.itemForElement( event.target );
+            //this.text = event.target.innerText;
+            this.model = event.target.dataKey;
           }
-          else if ( event.type == 'keys-pressed' ) {
-            item = this.$.templateList.itemForElement( event.detail.keyboardEvent.target );
-          }
+
+          //TODO
+          //else if ( event.type == 'keys-pressed' ) {
+          //  item = this.$.templateList.itemForElement( event.detail.keyboardEvent.target );
+          //}
 
           this._unselectAll();
-          e.target.classList.toggle('is_selected');
-          this.text = e.target.innerText;
           this._close();
-          this.model = e.target.dataKey;
-          this.fire( 'on-br-select-select', { key: e.target.dataKey, value: e.target.innerText, item: item } );
+
+          //event.target.classList.toggle( 'is_selected' );
+
+          //this.fire( 'on-br-select-select', { key: item.key, value: item.value, item: item } );
         }
 
-        this.classList.add('active');
+        //this.classList.add('active');
       },
 
-      _onModelChanged: function () {
+      _setSelectedItem: function ( model ) {
 
-        this.async(function () {
-          if ( !!this.model ) {
-            this._setSelectedItem( this.model );
-            this.isValidForm = true;
+        //if ( this.options && this.options.length > 0 ) {
+
+        //  var element = this.options.filter( function ( item ) {
+        //    return item.key == model;
+        //  } );
+
+        //  if ( element.length > 0 ) {
+
+            this.classList.add( 'active' );
+
+            //this.async( function () {
+              var selectedItem = this.$$( '#item' + model );
+              selectedItem.classList.add( 'is_selected' );
+
+              var item = this.$.templateList.itemForElement( selectedItem );
+              this.text = item.value;
+            //} );
+            this.fire( 'on-br-select-select', { key: item.key, value: item.value, item: item } );
+          //}
+        //}
+
+      },
+
+      _validate: function() {
+        if ( this.model )
+          this.isValidForm = true;
+        else
+          this.isValidForm = false;
+      },
+
+      _requiredChanged: function () {
+
+        if ( this.dirty )
+          this._validate();
+
+        this.fire( 'on-br-select-selected' );
+
+      },
+
+      _modelChanged: function () {
+
+          if ( this.model ) {
+
+            if ( this.options )
+              this._setSelectedItem( this.model );
+
+          }
+
+          if ( this.dirty ) {
+            this._validate();
             this.fire( 'on-br-select-selected' );
           }
-          else
-            this.clear();
-        });
 
       },
 
-      _onOptionsChanged: function () {
-        this.async(function () {
-          if (!!this.model)
-            this._setSelectedItem(this.model);
-        } );
-      },
+      _optionsChanged: function () {
 
-      _setSelectedItem: function (model) {
+        this.async( function () {
+          if ( this.options ) {
 
-        if (this.options && this.options.length > 0) {
+            if ( this.model )
+              this._setSelectedItem( this.model );
 
-          var element = this.options.filter(function (item) {
-            return item.key == model;
-          });
-
-          if (element.length > 0) {
-            this.text = element[0].value;
-
-            this.classList.add('active');
-
-            this.async(function () {
-              var selectedItem = this.$$('#item' + model);
-              selectedItem.classList.add('is_selected');
-            });
           }
-        }
+        } );
 
       },
 
@@ -191,9 +232,9 @@
       /* -- Public Methods -------------------------------------------- */
 
       clear: function () {
+        this.dirty = true;
         this.text = '';
         this.model = '';
-        this.isValidForm = false;
         this._unselectAll();
         this.classList.remove( 'active' );
       }
