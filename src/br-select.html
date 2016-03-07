@@ -139,16 +139,19 @@
 
         //  if ( element.length > 0 ) {
 
-            this.classList.add( 'active' );
+        this.async( function () {
 
-            //this.async( function () {
-              var selectedItem = this.$$( '#item' + model );
-              selectedItem.classList.add( 'is_selected' );
+          this.classList.add( 'active' );
 
-              var item = this.$.templateList.itemForElement( selectedItem );
-              this.text = item.value;
-            //} );
-            this.fire( 'on-br-select-select', { key: item.key, value: item.value, item: item } );
+          var selectedItem = this.$$( '#item' + model );
+          selectedItem.classList.add( 'is_selected' );
+
+          var item = this.$.templateList.itemForElement( selectedItem );
+          this.text = item.value;
+
+          this.fire( 'on-br-select-select', { key: item.key, value: item.value, item: item } );
+
+          } );
           //}
         //}
 
