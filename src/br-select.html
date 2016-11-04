@@ -24,7 +24,7 @@
 
       <ul id="list" class="list">
         <template id="templateList" is="dom-repeat" items="{{options}}" filter="{{_filter(filterVal)}}">
-          <li id$="{{_computeId(item.key)}}" class="js-drop-content-item" on-click='_onItemSelected' data-key="{{item.key}}" tabindex="-1">{{item.value}}</li>
+          <li id$="{{_computeId(item.key)}}" class="js-drop-content-item" on-click='_onItemSelected' data-key="{{item.key}}" data-value="{{item.value}}" tabindex="-1">{{item.value}}</li>
         </template>
       </ul>
 
@@ -123,6 +123,7 @@
             //item = this.$.templateList.itemForElement( event.target );
             //this.text = event.target.innerText;
             this.model = event.target.dataKey;
+            this.value = event.target.dataValue;
           }
 
           //TODO
