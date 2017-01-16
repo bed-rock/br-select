@@ -24,7 +24,8 @@
 
       <ul id="list" class="list">
         <template id="templateList" is="dom-repeat" items="{{options}}" filter="{{_filter(filterVal)}}">
-          <li id$="{{_computeId(item.key)}}" class="js-drop-content-item" on-click='_onItemSelected' data-key="{{item.key}}" data-value="{{item.value}}" tabindex="-1">{{item.value}}</li>
+          <li id$="{{_computeId(item.key)}}" class="js-drop-content-item" on-click='_onItemSelected' data-key="{{item.key}}" data-value="{{item.value}}"
+            tabindex="-1">{{item.value}}</li>
         </template>
       </ul>
 
@@ -72,7 +73,9 @@
         this.dirty = false;
         this.selectedItems = [];
 
-        this.classList.add( 'form_field', 'select' );       
+        this.classList.add( 'form_field', 'select' );
+
+        this.push('options', {key: '', value: ''});      
 
       },
 
@@ -93,20 +96,20 @@
 
         if (this.multiselect) {
 
-          if (e.target.classList.contains('is_selected')) {
-            var index = this._arrayObjectIndexOf(this.selectedItems, e.target.dataKey, "key");
-            e.target.classList.remove('is_selected');
+          if (event.target.classList.contains('is_selected')) {
+            var index = this._arrayObjectIndexOf(this.selectedItems, event.target.dataKey, "key");
+            event.target.classList.remove('is_selected');
             this.selectedItems.splice(index, 1);
           }
           else {
             var isDuplicated = this.selectedItems.some(function (item) {
-              return item.id === e.target.dataKey;
+              return item.id === event.target.dataKey;
             });
 
             if (!isDuplicated)
-              this.selectedItems.push(e.target.dataKey);
+              this.selectedItems.push(event.target.dataKey);
 
-            e.target.classList.add('is_selected');
+            event.target.classList.add('is_selected');
           }
 
           if (this.selectedItems.length > 0)
