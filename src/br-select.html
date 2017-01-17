@@ -261,16 +261,19 @@
       /* -- Public Methods -------------------------------------------- */
 
       clear: function () {
-        this.dirty = true;
-        this.text = '';
+        if (!!this.model) {
 
-        if (this.multiselect)
-          this.model = [];
-        else
-          this.model = '';
-          
-        this._unselectAll();
-        this.classList.remove('active');
+          this.dirty = false;
+          this.text = '';
+
+          if (this.multiselect)
+            this.model = this.selectedItems;
+          else
+            this.model = '';
+
+          this._unselectAll();
+          this.classList.remove('active');
+        }
       },
 
       generateRequest: function () {
