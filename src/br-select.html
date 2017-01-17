@@ -73,9 +73,9 @@
         this.dirty = false;
         this.selectedItems = [];
 
-        this.classList.add( 'form_field', 'select' );
+        this.classList.add('form_field', 'select');
 
-        this.push('options', {key: '', value: ''});      
+        this.push('options', { key: '', value: '' });
 
       },
 
@@ -87,10 +87,10 @@
       },
 
       _close: function () {
-        this.$$( 'br-select-box' ).classList.remove( 'open' );
+        this.$$('br-select-box').classList.remove('open');
       },
 
-      _onItemSelected: function ( event ) {
+      _onItemSelected: function (event) {
 
         this.dirty = true;
 
@@ -119,10 +119,9 @@
 
           this.model = this.selectedItems;
         }
-
         else {
           //var item;
-          if ( event.type == 'click' ) {
+          if (event.type == 'click' || event.type == 'tap') {
             //item = this.$.templateList.itemForElement( event.target );
             //this.text = event.target.innerText;
             this.model = event.target.dataKey;
@@ -145,7 +144,7 @@
         //this.classList.add('active');
       },
 
-      _setSelectedItem: function ( model ) {
+      _setSelectedItem: function (model) {
 
         //if ( this.options && this.options.length > 0 ) {
 
@@ -155,26 +154,26 @@
 
         //  if ( element.length > 0 ) {
 
-        this.async( function () {
+        this.async(function () {
 
-          this.classList.add( 'active' );
+          this.classList.add('active');
 
-          var selectedItem = this.$$( '#item' + model );
-          selectedItem.classList.add( 'is_selected' );
+          var selectedItem = this.$$('#item' + model);
+          selectedItem.classList.add('is_selected');
 
-          var item = this.$.templateList.itemForElement( selectedItem );
+          var item = this.$.templateList.itemForElement(selectedItem);
           this.text = item.value;
 
-          this.fire( 'on-br-select-select', { key: item.key, value: item.value, item: item } );
+          this.fire('on-br-select-select', { key: item.key, value: item.value, item: item });
 
-          } );
-          //}
+        });
+        //}
         //}
 
       },
 
-      _validate: function() {
-        if ( this.model )
+      _validate: function () {
+        if (this.model)
           this.isValidForm = true;
         else
           this.isValidForm = false;
@@ -182,39 +181,39 @@
 
       _requiredChanged: function () {
 
-        if ( this.dirty )
+        if (this.dirty)
           this._validate();
 
-        this.fire( 'on-br-select-selected' );
+        this.fire('on-br-select-selected');
 
       },
 
       _modelChanged: function () {
 
-          if ( this.model ) {
+        if (this.model) {
 
-            if ( this.options )
-              this._setSelectedItem( this.model );
+          if (this.options)
+            this._setSelectedItem(this.model);
 
-          }
+        }
 
-          this._validate();
+        this._validate();
 
-          if ( this.dirty )
-            this.fire( 'on-br-select-selected' );          
+        if (this.dirty)
+          this.fire('on-br-select-selected');
 
       },
 
       _optionsChanged: function () {
 
-        this.async( function () {
-          if ( this.options ) {
+        this.async(function () {
+          if (this.options) {
 
-            if ( this.model )
-              this._setSelectedItem( this.model );
+            if (this.model)
+              this._setSelectedItem(this.model);
 
           }
-        } );
+        });
 
       },
 
@@ -231,13 +230,13 @@
         this.selectedItems.splice(0, this.selectedItems.length);
       },
 
-      _filter: function ( val ) {
-        return function ( options ) {
-          if ( !val )
+      _filter: function (val) {
+        return function (options) {
+          if (!val)
             return true;
-          if ( !options )
+          if (!options)
             return false;
-          return ( options.value && ~options.value.toLowerCase().indexOf( val.toLowerCase() ) );
+          return (options.value && ~options.value.toLowerCase().indexOf(val.toLowerCase()));
         };
       },
 
@@ -248,14 +247,14 @@
         return -1;
       },
 
-      _handleRequest: function() {
+      _handleRequest: function () {
         this.loading = true;
-        this.disabled  = true;
+        this.disabled = true;
       },
 
-      _handleResponse: function() {
+      _handleResponse: function () {
         this.loading = false;
-        this.disabled  = false;
+        this.disabled = false;
         this.options = this.ajaxResponse.Data;
       },
 
@@ -264,12 +263,17 @@
       clear: function () {
         this.dirty = true;
         this.text = '';
-        this.model = '';
+
+        if (this.multiselect)
+          this.model = [];
+        else
+          this.model = '';
+          
         this._unselectAll();
-        this.classList.remove( 'active' );
+        this.classList.remove('active');
       },
 
-      generateRequest: function(){
+      generateRequest: function () {
         this.$.apiAjax.generateRequest();
       }
 
