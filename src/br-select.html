@@ -257,7 +257,7 @@
       _handleResponse: function () {
         this.loading = false;
         this.disabled = false;
-        this.options = this.ajaxResponse.Data;
+        this.options = this.ajaxResponse.Data || this.ajaxResponse.data || this.ajaxResponse; 
       },
 
       /* -- Public Methods -------------------------------------------- */
