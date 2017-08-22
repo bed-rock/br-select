@@ -9,27 +9,27 @@
 
     <iron-ajax id="apiAjax" url="{{urlApi}}" handle-as="json" content-type="application/json" headers="{{token}}" last-response="{{ajaxResponse}}"
       on-request="_handleRequest" on-response="_handleResponse" debounce-duration="300">
-      </iron-ajax>
+    </iron-ajax>
 
-      <label for$="{{name}}">{{label}}</label>
+    <label for$="{{name}}">{{label}}</label>
 
-      <input type="text" id$="{{name}}" value="{{text}}" on-click="_open" required$="{{required}}" disabled$="{{disabled}}" readonly>
+    <input type="text" id$="{{name}}" value="{{text}}" on-click="_open" required$="{{required}}" disabled$="{{disabled}}" readonly>
 
-      <template is="dom-if" if="{{loading}}">
-        <br-icons icon="br-icons:loading" class="icon icon__spin"></br-icons>
-      </template>
+    <template is="dom-if" if="{{loading}}">
+      <br-icons icon="br-icons:loading" class="icon icon__spin"></br-icons>
+    </template>
 
-      <br-select-box>
-        <input type="text" class="input_search" value="{{filterVal::input}}" placeholder="Digite sua busca">
+    <br-select-box>
+      <input type="text" class="input_search" value="{{filterVal::input}}" placeholder="Digite sua busca">
 
-        <ul id="list" class="list">
-          <template id="templateList" is="dom-repeat" items="{{options}}" filter="{{_filter(filterVal)}}">
-            <li id$="{{_computeId(item.key)}}" class="js-drop-content-item" on-click='_onItemSelected' data-key="{{item.key}}" data-value="{{item.value}}"
-              tabindex="-1">{{item.value}}</li>
-          </template>
-        </ul>
+      <ul id="list" class="list">
+        <template id="templateList" is="dom-repeat" items="{{options}}" filter="{{_filter(filterVal)}}">
+          <li id$="{{_computeId(item.key)}}" class="js-drop-content-item" on-click='_onItemSelected' data-key="{{item.key}}" data-value="{{item.value}}"
+            tabindex="-1">{{item.value}}</li>
+        </template>
+      </ul>
 
-      </br-select-box>
+    </br-select-box>
 
   </template>
   <script>
@@ -118,7 +118,7 @@
             this.text = 'Selecione';
 
           this.model = this.selectedItems;
-          
+
         }
         else {
           //var item;
@@ -163,7 +163,21 @@
           selectedItem.classList.add('is_selected');
 
           var item = this.$.templateList.itemForElement(selectedItem);
-          this.text = item.value;
+
+          if (this.multiselect) {
+            var isDuplicated = this.selectedItems.some(function (item) {
+              return item === model;
+            });
+
+            if (!isDuplicated)
+              this.selectedItems.push(model);
+
+            //this.selectedItems.push(model);
+            this.text = '( ' + this.selectedItems.length + ' Selecionados ) ';
+          }
+          else
+            this.text = item.value;
+
 
           this.fire('on-br-select-select', { key: item.key, value: item.value, item: item });
 
@@ -193,8 +207,16 @@
 
         if (this.model) {
 
-          if (this.options)
-            this._setSelectedItem(this.model);
+          if (this.options) {
+
+            if (this.model instanceof Array) {
+              for (var i = 0; i < this.model.length; i++) {
+                this._setSelectedItem(this.model[i]);
+              }
+            }
+            else
+              this._setSelectedItem(this.model);
+          }
 
         }
 
@@ -257,7 +279,7 @@
       _handleResponse: function () {
         this.loading = false;
         this.disabled = false;
-        this.options = this.ajaxResponse.Data || this.ajaxResponse.data || this.ajaxResponse; 
+        this.options = this.ajaxResponse.Data || this.ajaxResponse.data || this.ajaxResponse;
       },
 
       /* -- Public Methods -------------------------------------------- */
