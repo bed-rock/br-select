@@ -74,7 +74,7 @@
 
         this.classList.add('form_field', 'select');
 
-        this.push('options', { key: '', value: '' });
+        // this.push('options', { key: '', value: '' });
 
       },
 
@@ -279,7 +279,9 @@
       _handleResponse: function () {
         this.loading = false;
         this.disabled = false;
-        this.options = this.ajaxResponse.Data || this.ajaxResponse.data || this.ajaxResponse;
+        
+        if(this.ajaxResponse)
+          this.options = this.ajaxResponse.Data || this.ajaxResponse.data || this.ajaxResponse;
       },
 
       /* -- Public Methods -------------------------------------------- */
