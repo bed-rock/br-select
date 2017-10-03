@@ -181,7 +181,7 @@
                   this.selectedItems.push(model[i]);
 
               }
-            }            
+            }
 
             //this.selectedItems.push(model);
             this.text = '( ' + this.selectedItems.length + ' Selecionados ) ';
@@ -194,8 +194,8 @@
             this.text = item.value;
           }
 
-
-          this.fire('on-br-select-select', { key: item.key, value: item.value, item: item });
+          if (item)
+            this.fire('on-br-select-select', { key: item.key, value: item.value, item: item });
 
         });
         //}
@@ -265,7 +265,7 @@
       },
 
       _arrayObjectIndexOf: function (myArray, searchTerm, property) {
-        for (var i = 0, len = myArray.length; i < len; i++) {          
+        for (var i = 0, len = myArray.length; i < len; i++) {
           if (myArray[i][property] === searchTerm) return i;
         }
         return -1;
@@ -279,8 +279,8 @@
       _handleResponse: function () {
         this.loading = false;
         this.disabled = false;
-        
-        if(this.ajaxResponse)
+
+        if (this.ajaxResponse)
           this.options = this.ajaxResponse.Data || this.ajaxResponse.data || this.ajaxResponse;
       },
 
